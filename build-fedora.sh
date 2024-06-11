@@ -1,14 +1,9 @@
 #!/bin/bash
 
-ARCH=$(arch)
-MAIN_DIR=/tmp/FreeCAD
+#(C) 2024 Gunnar Andersson, License: MIT
 
-# Removed
-#qt-devel 
-#Coin3 
-#Coin3-devel -> change to Coin4
-#boost-python2-devel 
-#boost-python2 
+MAIN_DIR="$(readlink -f "$(dirname "$0")")"
+cd "$MAIN_DIR"
 
 PACKAGES="gcc
 med-devel
@@ -26,7 +21,9 @@ boost-devel
 yaml-cpp-devel
 "
 
-NOT_NEEDED="
+# These seem not needed for the compilation with default config (???)  
+# Some might be needed at runtime though.
+TBD_NOT_NEEDED="
 gcc-c++ 
 zlib-devel 
 swig 
@@ -48,24 +45,11 @@ boost-python3
 boost-python3-devel
 "
 
-set -x
-read x
 #echo "Removing packages"
 #dnf remove $(echo $NOT_NEEDED)
-read x
-dnf install -y $(echo $PACKAGES)
-read x
 
 echo "Installing packages required to build FreeCAD"
-set -x
-#sudo dnf -y install $PACKAGES
-#cd ~
-#mkdir -p $MAIN_DIR || { echo "~/$MAIN_DIR already exist. Quitting.."; exit; }
-#git clone --recurse-submodules https://github.com/FreeCAD/FreeCAD.git
-cd $MAIN_DIR
-#mkdir $BUILD_DIR || { echo "~/$BUILD_DIR already exist. Quitting.."; exit; }
-
-touch dnf_successful_installed.txt
+sudo dnf install -y $(echo $PACKAGES)
 
 try_cmake() {
    cd "$build_absolute"
@@ -91,14 +75,9 @@ dnf_install() {
    fi
 }
 
-#echo "$PACKAGES" | while read p ; do
-#   dnf_install $p
-#   try_cmake && { echo "CMAKE succeeded here - stopping " ; exit 333 ; }
-#done
-#echo "$PACKAGES" | while read p ; do
-#   try_make && { echo "Make succeeded here - stopping " ; exit 334 ; }
-#done
-
+(set -x ; git clone --recurse-submodule https://github.com/FreeCAD/FreeCAD)
+set -xe
+cd FreeCAD
 mkdir -p build
 cd build
 build_absolute="$(readlink -f .)"
