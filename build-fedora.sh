@@ -5,7 +5,9 @@
 MAIN_DIR="$(readlink -f "$(dirname "$0")")"
 cd "$MAIN_DIR"
 
-PACKAGES="gcc
+PACKAGES="
+git
+gcc
 med-devel
 xerces-c-devel 
 Coin4 

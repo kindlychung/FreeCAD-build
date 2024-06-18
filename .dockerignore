@@ -1,0 +1,2 @@
+# ignore all, because we will map in the host dir when running the container
+*
